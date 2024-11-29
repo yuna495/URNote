@@ -63,9 +63,49 @@
       {
         "command": "urnote.deleteItem",
         "title": "Delete"
+      },
+      {
+        "command": "urnote.refresh",
+        "title": "Refresh",
+        "icon": "$(sync)"
+      },
+      {
+        "command": "urnote.showMoreOptions",
+        "title": "Root Actions",
+        "icon": "$(ellipsis)"
+      },
+      {
+        "command": "urnote.newFileInRoot",
+        "title": "New File in Root"
+      },
+      {
+        "command": "urnote.newFolderInRoot",
+        "title": "New Folder in Root"
       }
     ],
     "menus": {
+      "view/title": [
+        {
+          "command": "urnote.refresh",
+          "when": "view == urnoteExplorer",
+          "group": "navigation"
+        },
+        {
+          "command": "urnote.showMoreOptions",
+          "when": "view == urnoteExplorer",
+          "group": "1_navigation"
+        },
+        {
+          "command": "urnote.newFileInRoot",
+          "when": "view == urnoteExplorer",
+          "group": "2_navigation"
+        },
+        {
+          "command": "urnote.newFolderInRoot",
+          "when": "view == urnoteExplorer",
+          "group": "2_navigation"
+        }
+      ],
       "view/item/context": [
         {
           "command": "urnote.newFile",

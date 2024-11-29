@@ -193,6 +193,41 @@ function activate(context) {
       }
     })
   );
+  // Refresh コマンド
+  context.subscriptions.push(
+    vscode.commands.registerCommand("urnote.refresh", () => {
+      notesProvider.refresh(); // ビューを更新
+      vscode.window.showInformationMessage("View refreshed!");
+    })
+  );
+
+  // New File in Root コマンド
+  context.subscriptions.push(
+    vscode.commands.registerCommand("urnote.newFileInRoot", () => {
+      const rootPath = vscode.workspace
+        .getConfiguration("urnote")
+        .get("rootFolder");
+      if (rootPath) {
+        createNewFileInRoot(rootPath, notesProvider);
+      } else {
+        vscode.window.showErrorMessage("Root folder is not set.");
+      }
+    })
+  );
+
+  // New Folder in Root コマンド
+  context.subscriptions.push(
+    vscode.commands.registerCommand("urnote.newFolderInRoot", () => {
+      const rootPath = vscode.workspace
+        .getConfiguration("urnote")
+        .get("rootFolder");
+      if (rootPath) {
+        createNewFolderInRoot(rootPath, notesProvider);
+      } else {
+        vscode.window.showErrorMessage("Root folder is not set.");
+      }
+    })
+  );
 
   if (!rootPath) {
     vscode.window.showWarningMessage(
@@ -262,7 +297,18 @@ function showInExplorer(itemPath) {
     vscode.window.showErrorMessage("File does not exist.");
     return;
   }
-  // vscode.commands.executeCommand("revealFileInOS", vscode.Uri.file(itemPath));
+
+  // ファイルをエクスプローラーで表示
+  vscode.commands
+    .executeCommand("revealFileInOS", vscode.Uri.file(itemPath))
+    .then(
+      () => {
+        console.log("File revealed in OS.");
+      },
+      (err) => {
+        vscode.window.showErrorMessage(`Failed to reveal file: ${err.message}`);
+      }
+    );
 }
 
 //Copy Pathコマンド
@@ -365,4 +411,51 @@ function deleteItem(itemPath, notesProvider) {
       }
     }
   });
+}
+
+// Root Folderに新しいファイルを作成
+function createNewFileInRoot(rootPath, notesProvider) {
+  vscode.window
+    .showInputBox({ prompt: "Enter the new file name" })
+    .then((fileName) => {
+      if (!fileName) {
+        vscode.window.showErrorMessage("File name cannot be empty.");
+        return;
+      }
+      if (!path.extname(fileName)) {
+        fileName += ".md";
+      }
+
+      const filePath = path.join(rootPath, fileName);
+      try {
+        fs.writeFileSync(filePath, ""); // 空ファイルを作成
+        vscode.window.showInformationMessage(`Created file: ${filePath}`);
+        notesProvider.refresh(); // サイドビューを更新
+      } catch (err) {
+        vscode.window.showErrorMessage(`Failed to create file: ${err.message}`);
+      }
+    });
+}
+
+// Root Folderに新しいフォルダを作成
+function createNewFolderInRoot(rootPath, notesProvider) {
+  vscode.window
+    .showInputBox({ prompt: "Enter the new folder name" })
+    .then((folderName) => {
+      if (!folderName) {
+        vscode.window.showErrorMessage("Folder name cannot be empty.");
+        return;
+      }
+
+      const folderPath = path.join(rootPath, folderName);
+      try {
+        fs.mkdirSync(folderPath);
+        vscode.window.showInformationMessage(`Created folder: ${folderPath}`);
+        notesProvider.refresh(); // サイドビューを更新
+      } catch (err) {
+        vscode.window.showErrorMessage(
+          `Failed to create folder: ${err.message}`
+        );
+      }
+    });
 }
