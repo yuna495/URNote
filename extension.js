@@ -2,6 +2,9 @@ const vscode = require("vscode");
 const path = require("path");
 const fs = require("fs");
 
+let clipboardItem = null;
+let clipboardAction = null; // "copy" or "cut"
+
 class NotesProvider {
   constructor(rootPath) {
     this.rootPath = rootPath || null;
@@ -14,6 +17,13 @@ class NotesProvider {
   }
 
   getTreeItem(element) {
+    if (element.contextValue === "file") {
+      element.command = {
+        command: "vscode.open", // VSCode 標準のコマンド
+        title: "Open File",
+        arguments: [element.resourceUri],
+      };
+    }
     return element;
   }
 
@@ -101,6 +111,89 @@ function activate(context) {
     })
   );
 
+  // New Fileコマンド
+  context.subscriptions.push(
+    vscode.commands.registerCommand("urnote.newFile", (item) => {
+      if (item && item.resourceUri) {
+        createNewFile(item.resourceUri.fsPath, notesProvider);
+      }
+    })
+  );
+
+  // New Folderコマンド
+  context.subscriptions.push(
+    vscode.commands.registerCommand("urnote.newFolder", (item) => {
+      if (item && item.resourceUri) {
+        createNewFolder(item.resourceUri.fsPath, notesProvider);
+      }
+    })
+  );
+
+  // Show in Explorer コマンド
+  context.subscriptions.push(
+    vscode.commands.registerCommand("urnote.showInExplorer", (item) => {
+      if (item && item.resourceUri) {
+        showInExplorer(item.resourceUri.fsPath);
+      }
+    })
+  );
+
+  // Copy Path コマンド
+  context.subscriptions.push(
+    vscode.commands.registerCommand("urnote.copyPath", (item) => {
+      if (item && item.resourceUri) {
+        copyPath(item.resourceUri.fsPath);
+      }
+    })
+  );
+
+  // Copy コマンド
+  context.subscriptions.push(
+    vscode.commands.registerCommand("urnote.copy", (item) => {
+      if (item && item.resourceUri) {
+        copyItem(item);
+      }
+    })
+  );
+
+  // Cut コマンド
+  context.subscriptions.push(
+    vscode.commands.registerCommand("urnote.cut", (item) => {
+      if (item && item.resourceUri) {
+        cutItem(item);
+      }
+    })
+  );
+
+  // Paste コマンド
+  context.subscriptions.push(
+    vscode.commands.registerCommand("urnote.paste", (item) => {
+      if (item && item.resourceUri) {
+        pasteItem(item.resourceUri.fsPath, notesProvider);
+      }
+    })
+  );
+
+  // Rename コマンド
+  context.subscriptions.push(
+    vscode.commands.registerCommand("urnote.renameItem", (item) => {
+      if (item && item.resourceUri) {
+        renameItem(item.resourceUri.fsPath, notesProvider);
+        notesProvider.refresh();
+      }
+    })
+  );
+
+  // Delete コマンド
+  context.subscriptions.push(
+    vscode.commands.registerCommand("urnote.deleteItem", (item) => {
+      if (item && item.resourceUri) {
+        deleteItem(item.resourceUri.fsPath, notesProvider);
+        notesProvider.refresh();
+      }
+    })
+  );
+
   if (!rootPath) {
     vscode.window.showWarningMessage(
       'No root folder set. Please use "URNote: Select Root Folder" to set one.'
@@ -114,3 +207,162 @@ module.exports = {
   activate,
   deactivate,
 };
+function createNewFile(folderPath, notesProvider) {
+  vscode.window
+    .showInputBox({ prompt: "Enter the new file name" })
+    .then((fileName) => {
+      if (!fileName) {
+        vscode.window.showErrorMessage("File name cannot be empty.");
+        return;
+      }
+      // ファイル名に拡張子がない場合は .md を追加
+      if (!path.extname(fileName)) {
+        fileName += ".md";
+      }
+
+      const filePath = path.join(folderPath, fileName);
+      try {
+        fs.writeFileSync(filePath, ""); // 空ファイルを作成
+        vscode.window.showInformationMessage(`Created file: ${filePath}`);
+        notesProvider.refresh(); // 自動更新
+      } catch (err) {
+        vscode.window.showErrorMessage(`Failed to create file: ${err.message}`);
+      }
+    });
+}
+
+// フォルダ作成コマンド
+function createNewFolder(folderPath, notesProvider) {
+  vscode.window
+    .showInputBox({ prompt: "Enter the new folder name" })
+    .then((folderName) => {
+      if (!folderName) {
+        vscode.window.showErrorMessage("Folder name cannot be empty.");
+        return;
+      }
+
+      const newFolderPath = path.join(folderPath, folderName);
+      try {
+        fs.mkdirSync(newFolderPath);
+        vscode.window.showInformationMessage(
+          `Created folder: ${newFolderPath}`
+        );
+        notesProvider.refresh(); // 自動更新
+      } catch (err) {
+        vscode.window.showErrorMessage(
+          `Failed to create folder: ${err.message}`
+        );
+      }
+    });
+}
+
+// Show in Explorerコマンド
+function showInExplorer(itemPath) {
+  if (!fs.existsSync(itemPath)) {
+    vscode.window.showErrorMessage("File does not exist.");
+    return;
+  }
+  // vscode.commands.executeCommand("revealFileInOS", vscode.Uri.file(itemPath));
+}
+
+//Copy Pathコマンド
+function copyPath(itemPath) {
+  if (!fs.existsSync(itemPath)) {
+    vscode.window.showErrorMessage("File does not exist.");
+    return;
+  }
+  vscode.env.clipboard.writeText(itemPath).then(() => {
+    // vscode.window.showInformationMessage("Path copied to clipboard!");
+  });
+}
+
+// Copy コマンド
+function copyItem(item) {
+  clipboardItem = item.resourceUri.fsPath;
+  clipboardAction = "copy";
+  vscode.window.showInformationMessage(`Copied: ${clipboardItem}`);
+}
+
+// Cut コマンド
+function cutItem(item) {
+  clipboardItem = item.resourceUri.fsPath;
+  clipboardAction = "cut";
+  vscode.window.showInformationMessage(`Cut: ${clipboardItem}`);
+}
+
+// Paste コマンド
+function pasteItem(targetPath, notesProvider) {
+  if (!clipboardItem || !clipboardAction) {
+    vscode.window.showErrorMessage("Nothing to paste.");
+    return;
+  }
+
+  const target = path.join(targetPath, path.basename(clipboardItem));
+  try {
+    if (clipboardAction === "copy") {
+      if (fs.lstatSync(clipboardItem).isDirectory()) {
+        fs.cpSync(clipboardItem, target, { recursive: true });
+      } else {
+        fs.copyFileSync(clipboardItem, target);
+      }
+    } else if (clipboardAction === "cut") {
+      fs.renameSync(clipboardItem, target);
+      clipboardItem = null;
+      clipboardAction = null;
+    }
+    vscode.window.showInformationMessage(`Pasted to: ${target}`);
+    notesProvider.refresh();
+  } catch (err) {
+    vscode.window.showErrorMessage(`Failed to paste: ${err.message}`);
+  }
+}
+
+// Rename コマンド
+function renameItem(itemPath, notesProvider) {
+  const ext = path.extname(itemPath);
+  vscode.window
+    .showInputBox({
+      prompt: "Enter the new name",
+      value: path.basename(itemPath, ext), // 拡張子を除いた名前を初期値として表示
+    })
+    .then((newName) => {
+      if (!newName) {
+        vscode.window.showErrorMessage("Name cannot be empty.");
+        return;
+      }
+      const newPath = path.join(path.dirname(itemPath), newName + ext);
+      try {
+        fs.renameSync(itemPath, newPath);
+        // vscode.window.showInformationMessage(`Renamed to: ${newPath}`);
+        notesProvider.refresh(); // 表示を更新
+      } catch (err) {
+        vscode.window.showErrorMessage(`Failed to rename: ${err.message}`);
+      }
+    });
+}
+
+// Delete コマンド
+function deleteItem(itemPath, notesProvider) {
+  const isConfirmed = vscode.window.showInformationMessage(
+    `Are you sure you want to delete: ${itemPath}? This action cannot be undone.`,
+    { modal: true },
+    "Yes"
+  );
+
+  isConfirmed.then((choice) => {
+    if (choice === "Yes") {
+      try {
+        const stats = fs.lstatSync(itemPath);
+        if (stats.isDirectory()) {
+          fs.rmdirSync(itemPath, { recursive: true });
+        } else {
+          fs.unlinkSync(itemPath);
+        }
+        vscode.window.showInformationMessage(`Deleted: ${itemPath}`);
+        notesProvider.refresh(); // 表示を更新
+      } catch (err) {
+        vscode.window.showErrorMessage(`Failed to delete: ${err.message}`);
+      }
+    }
+  });
+}

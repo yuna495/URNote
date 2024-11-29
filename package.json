@@ -27,8 +27,93 @@
       {
         "command": "urnote.selectRootFolder",
         "title": "URNote: Select Root Folder"
+      },
+      {
+        "command": "urnote.newFile",
+        "title": "New File"
+      },
+      {
+        "command": "urnote.newFolder",
+        "title": "New Folder"
+      },
+      {
+        "command": "urnote.showInExplorer",
+        "title": "Show in Explorer"
+      },
+      {
+        "command": "urnote.copyPath",
+        "title": "Copy Path"
+      },
+      {
+        "command": "urnote.copy",
+        "title": "Copy"
+      },
+      {
+        "command": "urnote.cut",
+        "title": "Cut"
+      },
+      {
+        "command": "urnote.paste",
+        "title": "Paste"
+      },
+      {
+        "command": "urnote.renameItem",
+        "title": "Rename"
+      },
+      {
+        "command": "urnote.deleteItem",
+        "title": "Delete"
       }
     ],
+    "menus": {
+      "view/item/context": [
+        {
+          "command": "urnote.newFile",
+          "when": "view == urnoteExplorer && viewItem == folder",
+          "group": "1_navigation"
+        },
+        {
+          "command": "urnote.newFolder",
+          "when": "view == urnoteExplorer && viewItem == folder",
+          "group": "1_navigation"
+        },
+        {
+          "command": "urnote.showInExplorer",
+          "when": "view == urnoteExplorer && viewItem == file",
+          "group": "2_navigation"
+        },
+        {
+          "command": "urnote.copyPath",
+          "when": "view == urnoteExplorer",
+          "group": "2_navigation"
+        },
+        {
+          "command": "urnote.copy",
+          "when": "view == urnoteExplorer",
+          "group": "3_navigation"
+        },
+        {
+          "command": "urnote.cut",
+          "when": "view == urnoteExplorer",
+          "group": "3_navigation"
+        },
+        {
+          "command": "urnote.paste",
+          "when": "view == urnoteExplorer && viewItem == folder",
+          "group": "3_navigation"
+        },
+        {
+          "command": "urnote.renameItem",
+          "when": "view == urnoteExplorer",
+          "group": "4_navigation"
+        },
+        {
+          "command": "urnote.deleteItem",
+          "when": "view == urnoteExplorer",
+          "group": "4_navigation"
+        }
+      ]
+    },
     "viewsContainers": {
       "activitybar": [
         {
