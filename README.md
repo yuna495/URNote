@@ -4,6 +4,8 @@ URNote is a Visual Studio Code extension designed for efficient note and file ma
 
 ## Features
 
+![URNote Example Interface](https://github.com/yuna495/urnote/blob/master/image/sample.png?raw=true)
+
 - **Dedicated Sidebar:**
 
 Adds a "Notes" view to the VSCode sidebar.
