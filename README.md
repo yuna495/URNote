@@ -1,65 +1,92 @@
-# urnote README
+# URNote README
 
-This is the README for your extension "urnote". After writing up a brief description, we recommend including the following sections.
+URNote is a Visual Studio Code extension designed for efficient note and file management. It adds a dedicated sidebar where you can set a root folder, create, edit, delete, rename, and organize files effortlessly.
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+- **Dedicated Sidebar:**
 
-For example if there is an image subfolder under your extension project workspace:
+Adds a "Notes" view to the VSCode sidebar.
+Displays all files and folders under the selected root folder.
 
-\!\[feature X\]\(images/feature-x.png\)
+- **Root Folder Management:**
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+Easily set the root folder via the command palette.
+Automatically reflects all contents of the root folder in the sidebar.
+
+- **File and Folder Operations:**
+
+Create new files and folders (if the extension is omitted, .md is added automatically).
+Rename files and folders while preserving their extensions.
+Delete files and folders safely.
+Supports copy, cut, and paste operations.
+
+- **Path Operations:**
+
+Copy the path of selected files or folders to the clipboard.
+Open files in the system file explorer.
+
+- **View Refresh:**
+
+Manually refresh the sidebar content using the refresh button at the top of the sidebar.
 
 ## Requirements
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+Visual Studio Code version 1.94.0 or later.
+Node.js and npm (required for development).
 
 ## Extension Settings
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+- **How to Set the Root Folder**
+-
 
-For example:
+Open the Visual Studio Code Command Palette (Ctrl+Shift+P).
+Search for and execute "URNote: Select Root Folder".
+In the dialog box, select the desired root folder.
+The sidebar will display all files and folders under the selected folder.
 
-This extension contributes the following settings:
+- **Refreshing the Sidebar**
+-
 
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
+Click the refresh button at the top of the sidebar to manually update its content.
 
 ## Known Issues
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
-
 ## Release Notes
-
-Users appreciate release notes as you update your extension.
 
 ### 1.0.0
 
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
+Initial release of URNote.
 
 ---
 
 ## Working with Markdown
 
-You can author your README using Visual Studio Code.  Here are some useful editor keyboard shortcuts:
+### Managing Notes
 
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux)
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux)
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets
+- **Create a New Note:**
+
+  - Right-click on the blank area in the sidebar and select "New File."
+  
+  - Enter a file name. If no extension is provided, .md is automatically added.
+  
+- **Edit Existing Notes:**
+
+  - Left-click on a note to open it in the editor.
+
+- **Organize Notes:**
+
+  - Right-click on a note to rename or delete it.
+  
+- **Locate Files:**
+
+  - Right-click on a note and select "Show in Explorer" to open the file in the system file explorer.
 
 ## For more information
 
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
+**Can someone please tell me how to implement the drag and drop feature!**
+
+- [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
+- [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
 
 **Enjoy!**
