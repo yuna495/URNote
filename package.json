@@ -1,0 +1,63 @@
+{
+  "name": "urnote",
+  "displayName": "URNote",
+  "description": "Markdown manager.",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.95.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./extension.js",
+  "contributes": {
+    "configuration": {
+      "type": "object",
+      "title": "URNote Configuration",
+      "properties": {
+        "urnote.rootFolder": {
+          "type": "string",
+          "default": "",
+          "description": "The root folder path for URNote."
+        }
+      }
+    },
+    "commands": [
+      {
+        "command": "urnote.selectRootFolder",
+        "title": "URNote: Select Root Folder"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "urnote",
+          "title": "URNote",
+          "icon": "image/icon.png"
+        }
+      ]
+    },
+    "views": {
+      "urnote": [
+        {
+          "id": "urnoteExplorer",
+          "name": "Notes"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "pretest": "npm run lint",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.95.0",
+    "@types/mocha": "^10.0.9",
+    "@types/node": "20.x",
+    "eslint": "^9.13.0",
+    "@vscode/test-cli": "^0.0.10",
+    "@vscode/test-electron": "^2.4.1"
+  }
+}
