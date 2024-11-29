@@ -258,7 +258,7 @@ function createNewFile(folderPath, notesProvider) {
       const filePath = path.join(folderPath, fileName);
       try {
         fs.writeFileSync(filePath, ""); // 空ファイルを作成
-        vscode.window.showInformationMessage(`Created file: ${filePath}`);
+        // vscode.window.showInformationMessage(`Created file: ${filePath}`);
         notesProvider.refresh(); // 自動更新
       } catch (err) {
         vscode.window.showErrorMessage(`Failed to create file: ${err.message}`);
@@ -279,9 +279,9 @@ function createNewFolder(folderPath, notesProvider) {
       const newFolderPath = path.join(folderPath, folderName);
       try {
         fs.mkdirSync(newFolderPath);
-        vscode.window.showInformationMessage(
-          `Created folder: ${newFolderPath}`
-        );
+        // vscode.window.showInformationMessage(
+        //   `Created folder: ${newFolderPath}`
+        // );
         notesProvider.refresh(); // 自動更新
       } catch (err) {
         vscode.window.showErrorMessage(
@@ -326,14 +326,14 @@ function copyPath(itemPath) {
 function copyItem(item) {
   clipboardItem = item.resourceUri.fsPath;
   clipboardAction = "copy";
-  vscode.window.showInformationMessage(`Copied: ${clipboardItem}`);
+  // vscode.window.showInformationMessage(`Copied: ${clipboardItem}`);
 }
 
 // Cut コマンド
 function cutItem(item) {
   clipboardItem = item.resourceUri.fsPath;
   clipboardAction = "cut";
-  vscode.window.showInformationMessage(`Cut: ${clipboardItem}`);
+  // vscode.window.showInformationMessage(`Cut: ${clipboardItem}`);
 }
 
 // Paste コマンド
@@ -356,7 +356,7 @@ function pasteItem(targetPath, notesProvider) {
       clipboardItem = null;
       clipboardAction = null;
     }
-    vscode.window.showInformationMessage(`Pasted to: ${target}`);
+    // vscode.window.showInformationMessage(`Pasted to: ${target}`);
     notesProvider.refresh();
   } catch (err) {
     vscode.window.showErrorMessage(`Failed to paste: ${err.message}`);
@@ -404,7 +404,7 @@ function deleteItem(itemPath, notesProvider) {
         } else {
           fs.unlinkSync(itemPath);
         }
-        vscode.window.showInformationMessage(`Deleted: ${itemPath}`);
+        // vscode.window.showInformationMessage(`Deleted: ${itemPath}`);
         notesProvider.refresh(); // 表示を更新
       } catch (err) {
         vscode.window.showErrorMessage(`Failed to delete: ${err.message}`);
@@ -429,7 +429,7 @@ function createNewFileInRoot(rootPath, notesProvider) {
       const filePath = path.join(rootPath, fileName);
       try {
         fs.writeFileSync(filePath, ""); // 空ファイルを作成
-        vscode.window.showInformationMessage(`Created file: ${filePath}`);
+        //vscode.window.showInformationMessage(`Created file: ${filePath}`);
         notesProvider.refresh(); // サイドビューを更新
       } catch (err) {
         vscode.window.showErrorMessage(`Failed to create file: ${err.message}`);
@@ -450,7 +450,7 @@ function createNewFolderInRoot(rootPath, notesProvider) {
       const folderPath = path.join(rootPath, folderName);
       try {
         fs.mkdirSync(folderPath);
-        vscode.window.showInformationMessage(`Created folder: ${folderPath}`);
+        // vscode.window.showInformationMessage(`Created folder: ${folderPath}`);
         notesProvider.refresh(); // サイドビューを更新
       } catch (err) {
         vscode.window.showErrorMessage(
