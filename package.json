@@ -2,7 +2,7 @@
   "name": "urnote",
   "displayName": "URNote",
   "description": "Markdown manager.",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "publisher": "yuna495",
   "engines": {
     "vscode": "^1.94.0"
@@ -71,6 +71,10 @@
         "title": "Delete"
       },
       {
+        "command": "urnote.openMarkdownPreview",
+        "title": "Open Markdown Preview"
+      },
+      {
         "command": "urnote.refresh",
         "title": "Refresh",
         "icon": "$(sync)"
@@ -124,8 +128,13 @@
           "group": "1_navigation"
         },
         {
+          "command": "urnote.openMarkdownPreview",
+          "when": "view == urnoteExplorer && viewItem == markdownFile",
+          "group": "2_navigation"
+        },
+        {
           "command": "urnote.showInExplorer",
-          "when": "view == urnoteExplorer && viewItem == file",
+          "when": "view == urnoteExplorer && viewItem == file || viewItem == markdownFile",
           "group": "2_navigation"
         },
         {

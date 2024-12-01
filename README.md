@@ -58,7 +58,11 @@ Click the refresh button at the top of the sidebar to manually update its conten
 
 ### 1.0.0
 
-Initial release of URNote.
+- Initial release of URNote.
+
+## 1.1.0
+
+- Add RightClickMenu"Open Markdown Preview"
 
 ---
 

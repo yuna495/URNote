@@ -23,6 +23,10 @@ class NotesProvider {
         title: "Open File",
         arguments: [element.resourceUri],
       };
+      // Markdown ファイルの場合に専用の contextValue を設定
+      if (element.resourceUri.path.endsWith(".md")) {
+        element.contextValue = "markdownFile"; // Markdown 専用の contextValue
+      }
     }
     return element;
   }
@@ -125,6 +129,20 @@ function activate(context) {
     vscode.commands.registerCommand("urnote.newFolder", (item) => {
       if (item && item.resourceUri) {
         createNewFolder(item.resourceUri.fsPath, notesProvider);
+      }
+    })
+  );
+
+  // Markdown Preview コマンド
+  context.subscriptions.push(
+    vscode.commands.registerCommand("urnote.openMarkdownPreview", (item) => {
+      if (item && item.resourceUri) {
+        vscode.commands.executeCommand(
+          "markdown.showPreview",
+          item.resourceUri
+        );
+      } else {
+        vscode.window.showErrorMessage("No valid Markdown file selected.");
       }
     })
   );
